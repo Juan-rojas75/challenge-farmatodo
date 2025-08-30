@@ -19,5 +19,7 @@ RUN ./mvnw package -DskipTests
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 COPY --from=build /app/target/challenge-0.0.1-SNAPSHOT.jar app.jar
+# Variables de entorno (perfil por defecto = prod)
+ENV SPRING_PROFILES_ACTIVE=prod
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","app.jar"]

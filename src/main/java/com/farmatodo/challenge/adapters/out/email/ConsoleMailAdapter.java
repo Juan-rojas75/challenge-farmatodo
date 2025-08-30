@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("dev")
+@Profile({"dev", "default"})
 class ConsoleMailAdapter implements SendEmailPort {
   private static final Logger log = LoggerFactory.getLogger(ConsoleMailAdapter.class);
   @Override public void send(String to, String subject, String body){ log.info("MAIL to={} subj={} body={}", to, subject, body); }

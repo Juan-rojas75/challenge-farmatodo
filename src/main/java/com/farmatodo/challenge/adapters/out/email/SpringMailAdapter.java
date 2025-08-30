@@ -40,6 +40,7 @@ public class SpringMailAdapter implements SendEmailPort {
     MimeMessage msg = mailSender.createMimeMessage();
     try {
       MimeMessageHelper helper = new MimeMessageHelper(msg, "UTF-8");
+      helper.setFrom("juancartagena75@hotmail.com");
       helper.setTo(to);
       helper.setSubject(subject);
       helper.setText(html, true);

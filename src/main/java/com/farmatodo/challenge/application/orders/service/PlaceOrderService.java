@@ -34,8 +34,14 @@ public class PlaceOrderService implements PlaceOrderUseCase {
     this.payments = payments; this.mail = mail; this.findEmail = findEmail; this.props = props ; this.eventLogger = eventLogger;
   }
 
+  
   @Override
   public Result place(Command cmd) {
+    String txId = TxContext.get();
+    if (txId == null) {
+        txId = UUID.randomUUID().toString(); // fallback
+        TxContext.set(txId);
+    }
     Cart cart = loadCart.loadById(cmd.cartId())
         .orElseThrow(() -> new ResourceNotFoundException("Carrito no existe"));
     if (cart.isEmpty()) throw new IllegalArgumentException("Carrito vacío");
@@ -62,7 +68,7 @@ public class PlaceOrderService implements PlaceOrderUseCase {
     String to = findEmail.findEmailById(cmd.customerId()).orElse("noreply@example.com");
 
     if (ok) {
-       eventLogger.log("PAYMENT_SUCCESS", TxContext.get(), """
+       eventLogger.log("PAYMENT_SUCCESS", txId, """
         {"orderId":"%s"}
       """.formatted(order.getId()));
       order.markPaid();
@@ -79,7 +85,7 @@ public class PlaceOrderService implements PlaceOrderUseCase {
             "<b>Pago exitoso</b> del pedido " + order.getId());
       }
     } else {
-        eventLogger.log("PAYMENT_FAILED", TxContext.get(), """
+        eventLogger.log("PAYMENT_FAILED", txId, """
           {"orderId":"%s"}
         """.formatted(order.getId()));
       order.markFailed();
@@ -96,7 +102,7 @@ public class PlaceOrderService implements PlaceOrderUseCase {
     }
 
     order = saveOrder.save(order);
-    eventLogger.log("ORDER_CREATED", TxContext.get(), """
+    eventLogger.log("ORDER_CREATED", txId, """
       {"orderId":"%s","customerId":"%s","amount":%d}
     """.formatted(order.getId(), cmd.customerId(), total));
     return new Result(order.getId(), order.getStatus());
