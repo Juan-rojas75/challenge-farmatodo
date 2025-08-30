@@ -3,6 +3,7 @@ package com.farmatodo.challenge.application.products.service;
 import com.farmatodo.challenge.application.products.event.ProductSearchedEvent;
 import com.farmatodo.challenge.application.products.port.in.SearchProductsUseCase;
 import com.farmatodo.challenge.application.products.port.out.LoadProductsPort;
+import com.farmatodo.challenge.application.products.port.out.SaveProductPort;
 import com.farmatodo.challenge.bootstrap.config.ProductsProperties;
 import com.farmatodo.challenge.domain.products.model.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.*;
 class SearchProductsServiceTest {
 
   private LoadProductsPort load;
+  private SaveProductPort save;
   private ProductsProperties props;
   private ApplicationEventPublisher events;
   private SearchProductsService svc;
@@ -29,7 +31,7 @@ class SearchProductsServiceTest {
     props = new ProductsProperties();
     props.setMinStockThreshold(3);
     events = mock(ApplicationEventPublisher.class);
-    svc = new SearchProductsService(load, props, events);
+    svc = new SearchProductsService(load,save, props, events);
   }
 
   @Test

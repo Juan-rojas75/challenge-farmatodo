@@ -30,6 +30,7 @@ class PlaceOrderServiceTest {
   private LoadCartPort loadCart;
   private LoadProductBySkuPort loadProd;
   private SaveOrderPort saveOrder;
+  private LoadOrderPort search;
   private ChargePaymentPort payments;
   private SendEmailPort mail;
   private FindCustomerEmailPort findEmail;
@@ -49,7 +50,7 @@ class PlaceOrderServiceTest {
     props.setRetryCount(2);
     props.setRejectProbability(0.0);
     eventLogger = mock(EventLoggerPort.class);
-    svc = new PlaceOrderService(loadCart, loadProd, saveOrder, payments, mail, findEmail, props, eventLogger);
+    svc = new PlaceOrderService(loadCart, loadProd, saveOrder, search, payments, mail, findEmail, props, eventLogger);
   }
 
   @Test

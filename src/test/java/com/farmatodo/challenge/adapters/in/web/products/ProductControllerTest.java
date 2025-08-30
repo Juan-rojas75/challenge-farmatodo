@@ -1,5 +1,6 @@
 package com.farmatodo.challenge.adapters.in.web.products;
 
+import com.farmatodo.challenge.application.products.port.in.RegisterProductUseCase;
 import com.farmatodo.challenge.application.products.port.in.SearchProductsUseCase;
 import com.farmatodo.challenge.domain.products.model.Product;
 
@@ -20,11 +21,12 @@ class ProductControllerTest {
 
   private MockMvc mvc;
   private SearchProductsUseCase search;
+  private RegisterProductUseCase register;
 
   @BeforeEach
   void setup() {
     search = mock(SearchProductsUseCase.class);
-    var controller = new ProductController(search);
+    var controller = new ProductController(search, register);
     mvc = MockMvcBuilders.standaloneSetup(controller) // sin contexto
         // .setControllerAdvice(new GlobalExceptionHandler()) // si tienes
         .build();

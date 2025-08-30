@@ -22,6 +22,7 @@ class PlaceOrderServiceOverridesTest {
   LoadCartPort loadCart = mock(LoadCartPort.class);
   LoadProductBySkuPort loadProd = mock(LoadProductBySkuPort.class);
   SaveOrderPort saveOrder = mock(SaveOrderPort.class);
+  LoadOrderPort loadOrder = mock(LoadOrderPort.class);
   ChargePaymentPort payments = mock(ChargePaymentPort.class);
   SendEmailPort mail = mock(SendEmailPort.class);
   FindCustomerEmailPort findEmail = mock(FindCustomerEmailPort.class);
@@ -30,8 +31,8 @@ class PlaceOrderServiceOverridesTest {
   EventLoggerPort eventLogger = mock(EventLoggerPort.class);
 
   @BeforeEach void init(){
-    props.setRetryCount(0); props.setRejectProbability(1.0); // config mala por defecto
-    svc = new PlaceOrderService(loadCart, loadProd, saveOrder, payments, mail, findEmail, props, eventLogger);
+    props.setRetryCount(0); props.setRejectProbability(1.0);
+    svc = new PlaceOrderService(loadCart, loadProd, saveOrder, loadOrder, payments, mail, findEmail, props, eventLogger);
   }
 
   @Test

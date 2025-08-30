@@ -1,25 +1,31 @@
 package com.farmatodo.challenge.application.products.service;
 
+import com.farmatodo.challenge.application.products.port.in.RegisterProductUseCase;
 import com.farmatodo.challenge.application.products.port.in.SearchProductsUseCase;
 import com.farmatodo.challenge.application.products.port.out.LoadProductsPort;
+import com.farmatodo.challenge.application.products.port.out.SaveProductPort;
 import com.farmatodo.challenge.application.products.event.ProductSearchedEvent;
 import com.farmatodo.challenge.bootstrap.config.ProductsProperties;
+import com.farmatodo.challenge.domain.products.model.Product;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
-public class SearchProductsService implements SearchProductsUseCase {
+public class SearchProductsService implements SearchProductsUseCase, RegisterProductUseCase {
 
   private final LoadProductsPort load;
+  private final SaveProductPort savePort;
   private final ProductsProperties props;
   private final ApplicationEventPublisher events;
 
-  public SearchProductsService(LoadProductsPort load, ProductsProperties props, ApplicationEventPublisher events) {
-    this.load = load; this.props = props; this.events = events;
+  public SearchProductsService(LoadProductsPort load, SaveProductPort savePort , ProductsProperties props, ApplicationEventPublisher events) {
+    this.load = load; this.savePort = savePort; this.props = props; this.events = events;
   }
 
   /**
@@ -30,11 +36,19 @@ public class SearchProductsService implements SearchProductsUseCase {
    * ProductSearchedEvent con los par metros de entrada.
    */
   @Override
-  public List<com.farmatodo.challenge.domain.products.model.Product> search(Query query) {
+  public List<Product> search(Query query) {
     int threshold = query.minStock() != null ? query.minStock() : props.getMinStockThreshold();
-    List<com.farmatodo.challenge.domain.products.model.Product> items =
+    List<Product> items =
         load.searchByNameAndStock(query.q(), threshold);
     events.publishEvent(new ProductSearchedEvent(query.q(), threshold, query.requestedBy()));
     return items;
   }
+
+  @Override
+  public UUID register(Command cmd) {
+    Product toSave = new Product(UUID.randomUUID(), cmd.sku(), cmd.name(), cmd.stock(), cmd.price());
+    Product saved = savePort.save(toSave);
+    return saved.getId();
+  }
+
 }

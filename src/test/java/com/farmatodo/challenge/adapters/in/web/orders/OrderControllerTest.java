@@ -1,6 +1,7 @@
 package com.farmatodo.challenge.adapters.in.web.orders;
 
 import com.farmatodo.challenge.application.orders.port.in.PlaceOrderUseCase;
+import com.farmatodo.challenge.application.orders.port.in.SearchOrderuseCase;
 import com.farmatodo.challenge.domain.orders.model.OrderStatus;
 import org.junit.jupiter.api.*;
 import org.springframework.http.MediaType;
@@ -17,11 +18,12 @@ class OrderControllerTest {
 
   private MockMvc mvc;
   private PlaceOrderUseCase place;
+  private SearchOrderuseCase search;
 
   @BeforeEach
   void setup() {
     place = mock(PlaceOrderUseCase.class);
-    mvc = MockMvcBuilders.standaloneSetup(new OrderController(place)).build();
+    mvc = MockMvcBuilders.standaloneSetup(new OrderController(place, search)).build();
   }
 
   @Test

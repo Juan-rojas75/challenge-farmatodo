@@ -1,6 +1,8 @@
 package com.farmatodo.challenge.adapters.in.web.orders;
 
 import com.farmatodo.challenge.application.orders.port.in.PlaceOrderUseCase;
+import com.farmatodo.challenge.application.orders.port.in.SearchOrderuseCase;
+import com.farmatodo.challenge.domain.orders.model.Order;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +19,8 @@ import java.util.UUID;
 @Tag(name = "Orders", description = "API para gestionar pedidos")
 public class OrderController {
   private final PlaceOrderUseCase place;
-  public OrderController(PlaceOrderUseCase place){ this.place = place; }
+  private final SearchOrderuseCase searchOrder;
+  public OrderController(PlaceOrderUseCase place, SearchOrderuseCase search){ this.place = place; this.searchOrder = search;}
 
    /**
      * Crea un nuevo pedido con los items del carrito, para el cliente y
@@ -28,7 +31,7 @@ public class OrderController {
      * @return respuesta con el resultado de la operaci n, que incluye
      * el id del pedido y su estado
      */
-   @Operation(summary = "Crea un nuevo pedido")
+  @Operation(summary = "Crea un nuevo pedido")
   @PostMapping
   public ResponseEntity<OrderResponse> create(@RequestBody CreateOrderRequest r){
     var res = place.place(new PlaceOrderUseCase.Command(
@@ -37,5 +40,15 @@ public class OrderController {
     ));
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(new OrderResponse(res.id().toString(), res.status().name()));
+  }
+  
+  
+  @Operation(summary = "Obtiene un pedido")
+  @GetMapping("/{id}")
+  public ResponseEntity<Order> search(
+      @PathVariable String id
+      ){
+
+    return searchOrder.search(UUID.fromString(id)).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
 }

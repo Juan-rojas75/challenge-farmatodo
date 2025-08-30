@@ -32,7 +32,7 @@ public class CustomerController {
    * @param req el objeto de request con los datos del nuevo cliente
    * @return el objeto de respuesta con el id del nuevo cliente
    */
-   @Operation(summary = "Crea un nuevo cliente")
+  @Operation(summary = "Crea un nuevo cliente")
   @PostMapping
   public ResponseEntity<CustomerResponse> create(@Valid @RequestBody CustomerRequest req) {
     UUID id = register.register(new RegisterCustomerUseCase.Command(

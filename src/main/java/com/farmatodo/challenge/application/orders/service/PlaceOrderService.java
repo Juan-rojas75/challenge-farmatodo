@@ -2,6 +2,7 @@ package com.farmatodo.challenge.application.orders.service;
 
 import com.farmatodo.challenge.application.logs.port.out.EventLoggerPort;
 import com.farmatodo.challenge.application.orders.port.in.PlaceOrderUseCase;
+import com.farmatodo.challenge.application.orders.port.in.SearchOrderuseCase;
 import com.farmatodo.challenge.application.orders.port.out.*;
 import com.farmatodo.challenge.bootstrap.config.PaymentsProperties;
 import com.farmatodo.challenge.domain.cart.model.Cart;
@@ -15,11 +16,12 @@ import java.util.*;
 
 @Service
 @Transactional
-public class PlaceOrderService implements PlaceOrderUseCase {
+public class PlaceOrderService implements PlaceOrderUseCase, SearchOrderuseCase {
 
   private final LoadCartPort loadCart;
   private final LoadProductBySkuPort loadProd;
   private final SaveOrderPort saveOrder;
+  private final LoadOrderPort load;
   private final ChargePaymentPort payments;
   private final SendEmailPort mail;
   private final FindCustomerEmailPort findEmail;
@@ -27,10 +29,10 @@ public class PlaceOrderService implements PlaceOrderUseCase {
   private final EventLoggerPort eventLogger;
 
 
-  public PlaceOrderService(LoadCartPort loadCart, LoadProductBySkuPort loadProd, SaveOrderPort saveOrder,
+  public PlaceOrderService(LoadCartPort loadCart, LoadProductBySkuPort loadProd, SaveOrderPort saveOrder, LoadOrderPort load,
                            ChargePaymentPort payments, SendEmailPort mail,
                            FindCustomerEmailPort findEmail, PaymentsProperties props, EventLoggerPort eventLogger) {
-    this.loadCart = loadCart; this.loadProd = loadProd; this.saveOrder = saveOrder;
+    this.loadCart = loadCart; this.loadProd = loadProd; this.saveOrder = saveOrder; this.load = load;
     this.payments = payments; this.mail = mail; this.findEmail = findEmail; this.props = props ; this.eventLogger = eventLogger;
   }
 
@@ -115,6 +117,13 @@ public class PlaceOrderService implements PlaceOrderUseCase {
       {"orderId":"%s","customerId":"%s","amount":%d}
     """.formatted(order.getId(), cmd.customerId(), total));
     return new Result(order.getId(), order.getStatus());
+  }
+
+
+  @Override
+  public Optional<Order> search(UUID id) {
+    Optional<Order> order = load.searchById(id);
+    return order;
   }
 
   /**
