@@ -13,6 +13,10 @@ class SearchLogListener {
   private final SpringDataSearchLogRepository repo;
   SearchLogListener(SpringDataSearchLogRepository repo) { this.repo = repo; }
 
+  /**
+   * Listens for ProductSearchedEvent and records the search log to database asynchronously.
+   * @param e event
+   */
   @Async
   @EventListener
   public void on(ProductSearchedEvent e) {

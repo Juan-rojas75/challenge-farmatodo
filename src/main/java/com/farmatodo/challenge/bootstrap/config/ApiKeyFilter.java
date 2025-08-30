@@ -34,10 +34,9 @@ public class ApiKeyFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest req) {
-        // Quita el context-path para matchear por ruta real (p.ej. /v1/ping)
         String ctx = req.getContextPath(); // puede ser "/api" o ""
         String path = req.getRequestURI().substring(ctx.length());
-        return path.equals("/v1/ping") || path.equals("/actuator/health") || path.startsWith("/public/");
+        return path.equals("/v1/ping") || path.equals("/actuator/health") || path.startsWith("/public/")  || path.startsWith("/swagger-ui/");
     }
 
     @Override

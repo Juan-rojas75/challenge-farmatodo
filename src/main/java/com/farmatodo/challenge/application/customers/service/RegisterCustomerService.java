@@ -23,6 +23,15 @@ public class RegisterCustomerService implements RegisterCustomerUseCase {
     this.savePort = savePort; this.findByEmail = findByEmail; this.findByPhone = findByPhone;
   }
 
+  /**
+   * Registra un nuevo cliente en el sistema.
+   *
+   * Si el email o el n mero de telfono ya est n en la base de datos,
+   * se lanza una excepci n con el mensaje "Email/phone ya existe".
+   *
+   * @param cmd el objeto de request con los datos del nuevo cliente
+   * @return el id del nuevo cliente
+   */
   @Override
   public UUID register(Command cmd) {
     findByEmail.findByEmail(cmd.email())

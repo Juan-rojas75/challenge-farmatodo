@@ -7,6 +7,12 @@ import java.time.Instant;
 class EventLoggerAdapter implements EventLoggerPort {
   private final SpringDataEventLogRepository repo;
   EventLoggerAdapter(SpringDataEventLogRepository repo){ this.repo=repo; }
+  /**
+   * Logs an event using the given parameters.
+   * @param type the type of the event
+   * @param txId the transaction ID of the event
+   * @param payloadJson the payload of the event in JSON format
+   */
   @Override public void log(String type, String txId, String payloadJson){
     var e = new EventLogJpaEntity();
     e.setType(type); e.setTxId(txId); e.setPayloadJson(payloadJson); e.setCreatedAt(Instant.now());

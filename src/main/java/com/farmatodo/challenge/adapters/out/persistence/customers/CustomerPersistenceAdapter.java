@@ -16,6 +16,13 @@ class CustomerPersistenceAdapter implements SaveCustomerPort, FindCustomerByEmai
 
   CustomerPersistenceAdapter(SpringDataCustomerRepository repo) { this.repo = repo; }
 
+  /**
+   * Saves a customer into the database. If the customer already has an id, it
+   * will be used. Otherwise, a new id will be generated.
+   * 
+   * @param c the customer to be saved
+   * @return the saved customer with the id
+   */
   @Override
   public Customer save(Customer c) {
     CustomerJpaEntity e = new CustomerJpaEntity();
@@ -25,11 +32,23 @@ class CustomerPersistenceAdapter implements SaveCustomerPort, FindCustomerByEmai
     return new Customer(e.getId(), e.getName(), e.getEmail(), e.getPhone(), e.getAddress());
   }
 
+  /**
+   * Finds a customer by email.
+   *
+   * @param email the email of the customer to find
+   * @return an optional with the customer, or an empty optional if not found
+   */
   @Override
   public Optional<Customer> findByEmail(String email) {
     return repo.findByEmail(email).map(e -> new Customer(e.getId(), e.getName(), e.getEmail(), e.getPhone(), e.getAddress()));
   }
   
+  /**
+   * Finds a customer by phone.
+   *
+   * @param phone the phone of the customer to find
+   * @return an optional with the customer, or an empty optional if not found
+   */
   @Override
   public Optional<Customer> findByPhone(String phone) {
     return repo.findByPhone(phone).map(e -> new Customer(e.getId(), e.getName(), e.getEmail(), e.getPhone(), e.getAddress()));

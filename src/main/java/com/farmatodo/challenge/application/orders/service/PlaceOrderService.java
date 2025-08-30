@@ -35,11 +35,20 @@ public class PlaceOrderService implements PlaceOrderUseCase {
   }
 
   
+  /**
+   * Crea un nuevo pedido con los items del carrito, para el cliente y
+   * con la direccion de envio especificados, y devuelve el resultado
+   * de la operaci n.
+   *
+   * @param cmd contenedor con los datos del pedido a crear
+   * @return respuesta con el resultado de la operaci n, que incluye
+   * el id del pedido y su estado
+   */
   @Override
   public Result place(Command cmd) {
     String txId = TxContext.get();
     if (txId == null) {
-        txId = UUID.randomUUID().toString(); // fallback
+        txId = UUID.randomUUID().toString();
         TxContext.set(txId);
     }
     Cart cart = loadCart.loadById(cmd.cartId())
@@ -108,6 +117,12 @@ public class PlaceOrderService implements PlaceOrderUseCase {
     return new Result(order.getId(), order.getStatus());
   }
 
+  /**
+   * Calcula el total del carrito en cents.
+   *
+   * @param cart carrito a calcular
+   * @return total en cents
+   */
   private long computeTotal(Cart cart) {
     long sum = 0;
     for (var it : cart.getItems()) {

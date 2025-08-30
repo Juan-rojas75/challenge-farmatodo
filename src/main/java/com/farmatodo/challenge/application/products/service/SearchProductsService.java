@@ -22,6 +22,13 @@ public class SearchProductsService implements SearchProductsUseCase {
     this.load = load; this.props = props; this.events = events;
   }
 
+  /**
+   * Busca productos por nombre y stock m nimo.
+   * El par metro minStock es opcional y se utiliza como umbral m nimo de stock,
+   * si no se proporciona se utiliza el umbral predeterminado en la configuraci n.
+   * Se devuelve una lista de productos encontrados y se publica un evento
+   * ProductSearchedEvent con los par metros de entrada.
+   */
   @Override
   public List<com.farmatodo.challenge.domain.products.model.Product> search(Query query) {
     int threshold = query.minStock() != null ? query.minStock() : props.getMinStockThreshold();

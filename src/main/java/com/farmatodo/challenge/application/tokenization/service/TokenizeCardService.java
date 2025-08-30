@@ -37,6 +37,13 @@ public class TokenizeCardService implements TokenizeCardUseCase {
     this.random = random;
   }
 
+  /**
+   * Ejecuta el caso de uso de tokenizar una tarjeta de crédito.
+   *
+   * @param cmd comando con los datos de la tarjeta
+   * @return el token generado, o lanza una excepción en caso de que la operación sea
+   *         rechazada por la política de probabilidad.
+   */
   @Override
   public CreditCardToken execute(Command cmd) {
     double r = random.getAsDouble();
@@ -50,6 +57,13 @@ public class TokenizeCardService implements TokenizeCardUseCase {
     return store.store(t);
   }
 
+  /**
+   * Genera un token aleatorio de 18 bytes, que se codifica en una cadena
+   * utilizando Base64 sin padding. El token se genera con una fuente de
+   * aleatoriedad criptográficamente segura.
+   *
+   * @return el token generado
+   */
   private String generateToken() {
     byte[] b = new byte[18];
     new SecureRandom().nextBytes(b);

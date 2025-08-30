@@ -11,6 +11,12 @@ class TokenPersistenceAdapter implements StoreTokenPort {
 
   TokenPersistenceAdapter(SpringDataTokenRepository repo) { this.repo = repo; }
 
+  /**
+   * Stores the given token in the database.
+   *
+   * @param t the token to store
+   * @return the given token, unmodified
+   */
   @Override
   public CreditCardToken store(CreditCardToken t) {
     TokenJpaEntity e = new TokenJpaEntity();

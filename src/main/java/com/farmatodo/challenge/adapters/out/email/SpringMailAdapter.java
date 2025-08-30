@@ -36,6 +36,14 @@ public class SpringMailAdapter implements SendEmailPort {
     sendHtml(to, subject, html);
   }
 
+  /**
+   * Envia un correo con el cuerpo en formato HTML.
+   * <p>
+   * La direcci n del remitente es fija en este momento.
+   * @param to direcci n del destinatario
+   * @param subject asunto del correo
+   * @param html cuerpo del correo en formato HTML
+   */
   private void sendHtml(String to, String subject, String html) {
     MimeMessage msg = mailSender.createMimeMessage();
     try {
